@@ -3,9 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
+  width,
   ScrollView,
   TouchableOpacity,
-  Image,
   useWindowDimensions,
 } from 'react-native';
 import { COLORS } from '../constants/colors';
@@ -15,7 +15,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
+      {}
       <View style={styles.header}>
         <Text style={styles.title}>Honkai: Star Rail</Text>
         <Text style={styles.subtitle}>
@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
         </Text>
       </View>
 
-      {/* Main Features */}
+      {}
       <View style={styles.featuresContainer}>
         <TouchableOpacity
           style={styles.featureCard}
@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Game Description */}
+      {}
       <View style={styles.descriptionContainer}>
         <Text style={styles.descriptionTitle}>Tentang Game</Text>
         <Text style={styles.descriptionText}>

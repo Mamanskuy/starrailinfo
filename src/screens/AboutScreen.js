@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  Linking,
 } from 'react-native';
 import { COLORS } from '../constants/colors';
 

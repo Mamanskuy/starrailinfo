@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  TouchableOpacity,
   Text,
 } from 'react-native';
 import { api } from '../services/api.js';
