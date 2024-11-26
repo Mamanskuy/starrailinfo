@@ -12,12 +12,24 @@ import { api } from '../services/api';
 import { COLORS } from '../constants/colors';
 import CharacterCard from '../components/CharacterCard';
 
+const PATHS = [
+  'All',
+  'Destruction',
+  'Hunt',
+  'Harmony',
+  'Nihility',
+  'Abundance',
+  'Preservation',
+  'Erudition'
+];
+
 const CharacterListScreen = ({ navigation }) => {
   const [characters, setCharacters] = useState([]);
   const [filteredCharacters, setFilteredCharacters] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [sortAscending, setSortAscending] = useState(true);
+  const [selectedPath, setSelectedPath] = useState('All');
 
   useEffect(() => {
     fetchCharacters();
@@ -36,9 +48,21 @@ const CharacterListScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const filtered = characters.filter(character =>
+    let filtered = characters;
+
+    // Filter by search query
+    filtered = characters.filter(character =>
       character.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    // Filter by path
+    if (selectedPath !== 'All') {
+      filtered = filtered.filter(character => 
+        character.path === selectedPath
+      );
+    }
+
+    // Sort by name
     const sorted = [...filtered].sort((a, b) => {
       if (sortAscending) {
         return a.name.localeCompare(b.name);
@@ -46,14 +70,35 @@ const CharacterListScreen = ({ navigation }) => {
         return b.name.localeCompare(a.name);
       }
     });
+
     setFilteredCharacters(sorted);
-  }, [searchQuery, sortAscending, characters]);
+  }, [searchQuery, sortAscending, selectedPath, characters]);
 
   const renderCharacterCard = ({ item }) => (
     <CharacterCard
       character={item}
       onPress={() => navigation.navigate('CharacterDetail', { character: item })}
     />
+  );
+
+  const renderPathButton = (path) => (
+    <TouchableOpacity
+      key={path}
+      style={[
+        styles.pathButton,
+        selectedPath === path && styles.selectedPathButton
+      ]}
+      onPress={() => setSelectedPath(path)}
+    >
+      <Text
+        style={[
+          styles.pathButtonText,
+          selectedPath === path && styles.selectedPathButtonText
+        ]}
+      >
+        {path}
+      </Text>
+    </TouchableOpacity>
   );
 
   if (loading) {
@@ -72,7 +117,19 @@ const CharacterListScreen = ({ navigation }) => {
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
-      <View style={styles.sortButton}>
+      
+      <View style={styles.pathFilterContainer}>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={PATHS}
+          renderItem={({ item }) => renderPathButton(item)}
+          keyExtractor={item => item}
+          contentContainerStyle={styles.pathButtonList}
+        />
+      </View>
+
+      <View style={styles.sortContainer}>
         <TouchableOpacity
           onPress={() => setSortAscending(!sortAscending)}
           style={styles.sortButtonContainer}
@@ -82,6 +139,7 @@ const CharacterListScreen = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
+
       <FlatList
         data={filteredCharacters}
         renderItem={renderCharacterCard}
@@ -113,7 +171,7 @@ const styles = StyleSheet.create({
   list: {
     padding: 10,
   },
-  sortButton: {
+  sortContainer: {
     alignItems: 'flex-end',
     paddingRight: 15,
     marginBottom: 10,
@@ -126,6 +184,31 @@ const styles = StyleSheet.create({
   sortButtonText: {
     color: COLORS.white,
     fontWeight: 'bold',
+  },
+  pathFilterContainer: {
+    marginBottom: 10,
+  },
+  pathButtonList: {
+    paddingHorizontal: 10,
+  },
+  pathButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: COLORS.white,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: COLORS.accent,
+  },
+  selectedPathButton: {
+    backgroundColor: COLORS.primary,
+  },
+  pathButtonText: {
+    color: COLORS.primary,
+    fontWeight: '500',
+  },
+  selectedPathButtonText: {
+    color: COLORS.white,
   },
 });
 
